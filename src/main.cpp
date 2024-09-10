@@ -96,12 +96,18 @@ void readAndInterpretMessageFromSerial()
   {
     // Read incoming message from serial
     messageToSend = Serial.readString();
+    messageToSend.replace(" ", "");
     // Check length pf message and decide, if it´s a multi payload message
     const unsigned int messageLength = messageToSend.length();
     if (messageLength > MAX_PAYLOAD_SIZE)
     {
       // calculate number of payloads
       numberOfPayloads = messageLength / MAX_PAYLOAD_SIZE + (messageLength % MAX_PAYLOAD_SIZE == 0 ? 0 : 1);
+      Serial.print("Message length = ");
+      Serial.println(messageLength);
+      Serial.print("Number of payloads = ");
+      Serial.println(numberOfPayloads);
+
       if (numberOfPayloads > MAX_NUMBER_PAYLOADS)
       {
         Serial.print("Message too big - number of payloads = ");
@@ -122,7 +128,8 @@ void readAndInterpretMessageFromSerial()
     {
       if (radio.write(messageToSend.c_str(), messageLength, false))
       { // false: acknowledgement request, true: no ack request
-        Serial.println("Message successfully sent");
+        Serial.print("Single Payload Message successfully sent: ");
+        Serial.println(messageToSend);
       }
     }
   }
@@ -138,7 +145,7 @@ void sendMultiPayload()
   {
     if (radio.write(messageSlice.c_str(), messageSlice.length(), false))
     { // false: acknowledgement request, true: no ack request
-      String serialMessage = String("Message payload#") + String(payloadIndex) + String(" = ") + String(messageSlice) + String(" successfully sent\n");
+      String serialMessage = String("Message payload #") + String(payloadIndex) + String(" = ") + String(messageSlice) + String(" successfully sent\n");
       Serial.print(serialMessage);
     }
   }
