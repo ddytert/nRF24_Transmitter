@@ -147,16 +147,17 @@ void sendMultiPayload()
     { // false: acknowledgement request, true: no ack request
       String serialMessage = String("Message payload #") + String(payloadIndex) + String(" = ") + String(messageSlice) + String(" successfully sent\n");
       Serial.print(serialMessage);
+
+      // Set index to next message
+      payloadIndex++;
+      // If it was the last message reset all variables
+      if (payloadIndex >= numberOfPayloads)
+      {
+        messageToSend = "";
+        numberOfPayloads = 0;
+        isSendingMPMG = false;
+        payloadIndex = 0;
+      }
     }
-  }
-  // Set index to next message
-  payloadIndex++;
-  // If it was the last message reset all variables
-  if (payloadIndex >= numberOfPayloads)
-  {
-    messageToSend = "";
-    numberOfPayloads = 0;
-    isSendingMPMG = false;
-    payloadIndex = 0;
   }
 }
